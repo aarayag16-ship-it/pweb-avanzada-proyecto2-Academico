@@ -21,13 +21,35 @@ namespace Academico.Web.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+          : base("DefaultConnection", throwIfV1Schema: false) { }
+
+        public static ApplicationDbContext Create() => new ApplicationDbContext();
+
+        public DbSet<Termino> Terminos { get; set; }
+        public DbSet<Curso> Cursos { get; set; }
+        public DbSet<Estudiante> Estudiantes { get; set; }
+        public DbSet<Matricula> Matriculas { get; set; }
+        public DbSet<MatriculaCurso> MatriculaCursos { get; set; }
+        public DbSet<Evaluacion> Evaluaciones { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Estudiante>()
+                .HasIndex(e => e.Identificacion).IsUnique();
+
+            modelBuilder.Entity<Estudiante>()
+                .HasIndex(e => e.Correo).IsUnique();
+
+            modelBuilder.Entity<Evaluacion>()
+                .HasIndex(e => new { e.EstudianteId, e.TerminoId, e.CursoId })
+                .IsUnique(); // evita duplicados por término/curso
         }
 
-        public static ApplicationDbContext Create()
-        {
-            return new ApplicationDbContext();
-        }
+        //public static ApplicationDbContext Create()
+        //{
+        //    return new ApplicationDbContext();
+        //}
     }
 }
