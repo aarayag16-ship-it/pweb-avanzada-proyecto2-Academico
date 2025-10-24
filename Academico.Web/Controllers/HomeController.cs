@@ -8,7 +8,14 @@ namespace Academico.Web.Controllers
 {
     public class HomeController : Controller
     {
+        [AllowAnonymous]
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Docente")]
+        public ActionResult Panel()
         {
             return View();
         }

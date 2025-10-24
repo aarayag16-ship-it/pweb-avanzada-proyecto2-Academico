@@ -1,0 +1,55 @@
+﻿<input id="q" class="form-control" placeholder="Buscar por nombre, apellido o identificación" />
+<ul id="res"></ul>
+
+<form id="frmEval">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="EstudianteId" id="EstudianteId" />
+    <select name="TerminoId" id="TerminoId" class="form-control" required></select>
+    <select name="CursoId" id="CursoId" class="form-control" required></select>
+    <input name="Nota" type="number" min="0" max="100" step="0.01" class="form-control" required />
+    <select name="TipoParticipacion" class="form-control" required>
+        <option>Alta</option>
+        <option>Media</option>
+        <option>Baja</option>
+    </select>
+    <select name="Estado" class="form-control" required>
+        <option>Aprobado</option>
+        <option>Reprobado</option>
+    </select>
+    <textarea name="Observaciones" class="form-control" maxlength="500"></textarea>
+    <button class="btn btn-success">Guardar</button>
+</form>
+
+<div id="msg"></div>
+
+@section scripts{
+    <script>
+$("#q").on("input", function(){
+  $.getJSON('/Evaluaciones/Buscar', { q: this.value }, function(list){
+    $("#res").empty();
+    list.forEach(x => {
+      $("#res").append(`<li class="py-1">
+        <a href="#" data-id="${x.Id}" class="pick">${x.Nombre} - ${x.Identificacion}</a></li>`);
+    });
+  });
+});
+
+$(document).on("click",".pick", function(e){
+  e.preventDefault();
+  const id = $(this).data("id");
+  $("#EstudianteId").val(id);
+  $("#msg").text(`Estudiante seleccionado ID: ${id}`);
+});
+
+// carga combos de término/curso (similar a antes)…
+
+$("#frmEval").on("submit", function(e){
+  e.preventDefault();
+  $.ajax({
+    url: '/Evaluaciones/Crear', method: 'POST', data: $(this).serialize(),
+    success: r => { $("#msg").text(r.msg); if(r.ok) this.reset(); }
+  });
+});
+    </script>
+}
+

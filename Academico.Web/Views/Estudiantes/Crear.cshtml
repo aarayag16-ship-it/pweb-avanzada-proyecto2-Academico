@@ -1,0 +1,59 @@
+﻿@model Academico.Web.Models.Estudiante
+@{
+    ViewBag.Title = "Registrar Estudiante";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Registrar Estudiante</h2>
+
+@using (Html.BeginForm("CrearAjax", "Estudiantes", FormMethod.Post, new { id = "frmEst", @class = "form-horizontal", role = "form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.LabelFor(m => m.Nombre)
+        @Html.TextBoxFor(m => m.Nombre, new { @class = "form-control", required = "required" })
+        @Html.ValidationMessageFor(m => m.Nombre)
+    </div>
+
+    <!-- Repite para Apellidos, Identificacion, FechaNacimiento, Provincia, Canton, Distrito, Correo -->
+    <div class="form-group">
+        @Html.Label("Cuatrimestre")
+        @Html.DropDownList("TerminoId", (SelectList)ViewBag.TerminoId, "--Seleccione--", new { @class = "form-control", required = "required" })
+    </div>
+
+    <div class="form-group">
+        <label>Cursos (selección múltiple)</label>
+        <select id="CursosIds" name="cursosIds" multiple class="form-control">
+            @* Rellenar este select vía AJAX cuando elija el término *@
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+}
+
+<div id="msg" class="mt-3"></div>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval")
+    <script>
+    // Cargar cursos por término
+    $("#TerminoId").change(function(){
+        var tid = $(this).val();
+        $.get('/Catalogos/CursosPorTermino', { terminoId: tid }, function(html){
+            $("#CursosIds").html(html); // retorna <option ...>
+        });
+    });
+
+    $("#frmEst").on("submit", function(e){
+        e.preventDefault();
+        if(!this.checkValidity()){ this.reportValidity(); return; } // validación HTML5
+        $.ajax({
+            url: this.action, method: 'POST', data: $(this).serialize(),
+            success: function(r){
+                $("#msg").text(r.msg);
+                if(r.ok) $("#frmEst")[0].reset();
+            }
+        });
+    });
+    </script>
+}

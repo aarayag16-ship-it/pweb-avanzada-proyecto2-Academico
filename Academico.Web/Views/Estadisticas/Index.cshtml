@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "Estadísticas";
+}
+<h2>Estadísticas por cuatrimestre y curso</h2>
+@Html.DropDownList("TerminoId", (SelectList)ViewBag.TerminoId, "--Termino--", new { @class = "form-control", id = "TerminoId" })
+@Html.DropDownList("CursoId", (SelectList)ViewBag.CursoId, "--Curso--", new { @class = "form-control", id = "CursoId" })
+
+<div class="row mt-3">
+    <div class="col-md-6">
+        <div><strong>Aprobados:</strong> <span id="ap"></span> / <span id="tt"></span> (<span id="pa"></span>%)</div>
+        <div><strong>Reprobados:</strong> <span id="rp"></span> / <span id="tt2"></span> (<span id="pr"></span>%)</div>
+    </div>
+</div>
+
+<canvas id="chartParticipacion"></canvas>
+
+@section scripts{
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+let chart;
+
+function loadKpis() {
+  const t = $("#TerminoId").val(), c = $("#CursoId").val();
+  if(!t || !c) return;
+  $.getJSON('/Estadisticas/Kpis', { terminoId: t, cursoId: c }, function(k){
+    $("#ap").text(k.aprob); $("#tt").text(k.total); $("#tt2").text(k.total);
+    $("#pa").text(k.porcAprob.toFixed(1)); $("#pr").text(k.porcReprob.toFixed(1));
+
+    const data = [k.participacion.alta, k.participacion.media, k.participacion.baja];
+    const labels = ['Alta','Media','Baja'];
+
+    if(chart){ chart.destroy(); }
+    chart = new Chart(document.getElementById('chartParticipacion'), {
+      type: 'bar',
+      data: { labels: labels, datasets: [{ label: 'Participación', data: data }] },
+      options: { responsive:true }
+    });
+  });
+}
+
+$("#TerminoId,#CursoId").change(loadKpis);
+    </script>
+}
+

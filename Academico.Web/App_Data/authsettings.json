@@ -1,0 +1,4 @@
+﻿{
+  "MaxFailedAccessAttempts": 5,
+  "DefaultLockoutMinutes": 15
+}
