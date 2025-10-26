@@ -1,11 +1,13 @@
 ﻿using Academico.Web.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using System;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Academico.Web
@@ -56,6 +58,35 @@ namespace Academico.Web
 
 
         }
+
+
+        public async Task<string> SeedRolesUsers()
+        {
+            using (var ctx = new ApplicationDbContext())
+            {
+                var roleMgr = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(ctx));
+                var userMgr = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(ctx));
+
+                if (!await roleMgr.RoleExistsAsync("Docente"))
+                    await roleMgr.CreateAsync(new IdentityRole("Docente"));
+
+                var email = "aarayag16@gmail.com";   // usa tu correo real
+                var user = await userMgr.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    user = new ApplicationUser { UserName = email, Email = email, EmailConfirmed = true };
+                    await userMgr.CreateAsync(user, "Qwer1234+");  // cámbiala luego
+                }
+
+                if (!await userMgr.IsInRoleAsync(user.Id, "Docente"))
+                    await userMgr.AddToRoleAsync(user.Id, "Docente");
+
+                await ctx.SaveChangesAsync();
+            }
+            return "OK";
+        }
+
+
     }
 
 }

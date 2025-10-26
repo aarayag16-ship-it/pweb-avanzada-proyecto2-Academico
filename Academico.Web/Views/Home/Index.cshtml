@@ -3,6 +3,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+
+@if (User.Identity.IsAuthenticated)
+{
+    <div>Autenticado como: @User.Identity.Name</div>
+    <div>¿Es Docente?: @(User.IsInRole("Docente") ? "Sí" : "No")</div>
+}
+else
+{
+    <div>No autenticado</div>
+}
+
+
+
 <div class="container" style="max-width: 980px;">
     <div class="jumbotron" style="margin-top:20px;">
         <h1 class="display-4">Sistema Académico</h1>

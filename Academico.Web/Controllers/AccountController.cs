@@ -52,6 +52,9 @@ namespace Academico.Web.Controllers
             }
         }
 
+       // [Authorize]
+        //public ActionResult SoloAutenticado() => Content("OK autenticado");
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
