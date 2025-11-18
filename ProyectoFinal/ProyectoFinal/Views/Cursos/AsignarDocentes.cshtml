@@ -1,0 +1,50 @@
+﻿@model ProyectoFinal.ViewModels.AssignTeachersToCourseViewModel
+
+@{
+    ViewData["Title"] = "Asignar docentes al curso";
+}
+
+<h2>Asignar docentes al curso</h2>
+
+<div class="mb-3">
+    <strong>Curso:</strong> @Model.NombreCurso (@Model.CodigoCurso)
+</div>
+
+<form asp-action="AsignarDocentes" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="CursoId" />
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Asignado</th>
+                <th>Correo</th>
+                <th>Usuario</th>
+                <th>Horario (opcional)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Docentes.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <input asp-for="Docentes[@i].Asignado" />
+                        <input type="hidden" asp-for="Docentes[@i].UserId" />
+                    </td>
+                    <td>@Model.Docentes[i].Email</td>
+                    <td>@Model.Docentes[i].NombreUsuario</td>
+                    <td>
+                        <input asp-for="Docentes[@i].Horario" class="form-control" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

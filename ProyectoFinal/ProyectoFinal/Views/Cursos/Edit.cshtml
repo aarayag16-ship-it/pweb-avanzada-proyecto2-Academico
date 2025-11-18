@@ -1,0 +1,65 @@
+﻿@model ProyectoFinal.ViewModels.CourseFormViewModel
+
+@{
+    ViewData["Title"] = "Editar curso";
+}
+
+<h2>Editar curso</h2>
+
+@if (Model.TieneEstudiantesInscritos)
+{
+    <div class="alert alert-info">
+        Este curso tiene estudiantes inscritos. No se permite cambiar el código.
+    </div>
+}
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Codigo" class="form-label"></label>
+        @if (Model.TieneEstudiantesInscritos)
+        {
+            <input asp-for="Codigo" class="form-control" readonly />
+        }
+        else
+        {
+            <input asp-for="Codigo" class="form-control" />
+        }
+        <span asp-validation-for="Codigo" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Descripcion" class="form-label"></label>
+        <textarea asp-for="Descripcion" class="form-control"></textarea>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Creditos" class="form-label"></label>
+        <input asp-for="Creditos" class="form-control" />
+        <span asp-validation-for="Creditos" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TerminoId" class="form-label"></label>
+        <select asp-for="TerminoId" asp-items="Model.Terminos" class="form-select">
+            <option value="">-- Seleccione un término --</option>
+        </select>
+        <span asp-validation-for="TerminoId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

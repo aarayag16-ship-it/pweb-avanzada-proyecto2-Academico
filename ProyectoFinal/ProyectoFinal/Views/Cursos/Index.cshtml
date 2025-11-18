@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ProyectoFinal.ViewModels.CourseListViewModel>
+
+@{
+    ViewData["Title"] = "Gestión de Cursos";
+}
+
+<h2>Gestión de Cursos</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">@TempData["Message"]</div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear nuevo curso</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Créditos</th>
+            <th>Cuatrimestre</th>
+            <th># Evaluaciones</th>
+            <th>Fecha creación</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Codigo</td>
+                <td>@c.Nombre</td>
+                <td>@c.Creditos</td>
+                <td>@c.TerminoDescripcion</td>
+                <td>@c.CantidadEvaluaciones</td>
+                <td>@c.FechaCreacion.ToLocalTime()</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@c.Id" class="btn btn-sm btn-danger">Eliminar</a>
+                    <a asp-action="AsignarDocentes" asp-route-id="@c.Id" class="btn btn-sm btn-info">Docentes</a>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>

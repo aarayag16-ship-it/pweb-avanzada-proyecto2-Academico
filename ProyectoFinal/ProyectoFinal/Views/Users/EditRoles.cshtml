@@ -1,0 +1,43 @@
+﻿@model ProyectoFinal.ViewModels.EditUserRolesViewModel
+
+@{
+    ViewData["Title"] = "Editar roles de usuario";
+}
+
+<h2>Editar roles de usuario</h2>
+
+<div class="mb-3">
+    <strong>Usuario:</strong> @Model.Email
+</div>
+
+<form asp-action="EditRoles" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="UserId" />
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Rol</th>
+                <th>Asignado</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.Roles.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Model.Roles[i].Name
+                        <input type="hidden" asp-for="Roles[@i].Name" />
+                    </td>
+                    <td>
+                        <input asp-for="Roles[@i].Selected" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ProyectoFinal.ViewModels.UserWithRolesViewModel>
+
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<h2>Gestión de Usuarios</h2>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Message"]
+    </div>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Correo</th>
+            <th>Usuario</th>
+            <th>Roles</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Email</td>
+                <td>@u.UserName</td>
+                <td>
+                    @if (u.Roles.Any())
+                    {
+                        @string.Join(", ", u.Roles)
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sin roles</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="EditRoles" asp-route-id="@u.Id" class="btn btn-sm btn-primary">
+                        Editar roles
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
