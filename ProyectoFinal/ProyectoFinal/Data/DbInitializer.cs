@@ -18,11 +18,13 @@ namespace ProyectoFinal.Data
 
             // 1) Crear roles si no existen
             string[] roles = new[]
-            {
-                RoleNames.Admin,
-                RoleNames.Coordinador,
-                RoleNames.Docente
-            };
+  {
+    RoleNames.Admin,
+    RoleNames.Coordinador,
+    RoleNames.Docente,
+    RoleNames.Estudiante   // ← NUEVO
+};
+
 
             foreach (var role in roles)
             {

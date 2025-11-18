@@ -43,6 +43,17 @@
                         Editar roles
                     </a>
                 </td>
+
+                <td>
+                    <a asp-action="EditRoles" asp-route-id="@u.Id" class="btn btn-sm btn-primary">
+                        Editar roles
+                    </a>
+                    <a asp-action="VincularEstudiante" asp-route-id="@u.Id" class="btn btn-sm btn-secondary">
+                        Vincular estudiante
+                    </a>
+                </td>
+
+
             </tr>
         }
     </tbody>

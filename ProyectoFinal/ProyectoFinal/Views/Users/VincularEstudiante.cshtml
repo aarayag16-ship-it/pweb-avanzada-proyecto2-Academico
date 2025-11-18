@@ -1,0 +1,33 @@
+﻿@model ProyectoFinal.ViewModels.LinkStudentUserViewModel
+
+@{
+    ViewData["Title"] = "Vincular estudiante a usuario";
+}
+
+<h2>Vincular estudiante a usuario</h2>
+
+<div class="mb-3">
+    <strong>Usuario:</strong> @Model.UserEmail
+</div>
+
+<form asp-action="VincularEstudiante" method="post">
+    @Html.AntiForgeryToken()
+
+    <input type="hidden" asp-for="UserId" />
+
+    <div class="mb-3">
+        <label asp-for="EstudianteId" class="form-label">Estudiante</label>
+        <select asp-for="EstudianteId" asp-items="Model.Estudiantes" class="form-select">
+            <option value="">-- Seleccione un estudiante --</option>
+        </select>
+
+        <span asp-validation-for="EstudianteId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

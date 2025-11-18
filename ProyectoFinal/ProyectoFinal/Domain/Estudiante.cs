@@ -15,6 +15,7 @@ namespace ProyectoFinal.Domain
         public DateTime FechaNacimiento { get; set; }
 
         public string Correo { get; set; } = default!;
+        public string? UserId { get; set; }    // Id de AspNetUsers
 
         // Relaciones
         public ICollection<Evaluacion> Evaluaciones { get; set; } = new List<Evaluacion>();

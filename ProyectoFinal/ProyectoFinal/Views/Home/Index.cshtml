@@ -1,8 +1,210 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Panel académico";
+    var userName = User.Identity?.IsAuthenticated == true
+        ? User.Identity.Name
+        : "Invitado";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container py-4">
+
+    <!-- Sección de bienvenida -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="p-4 rounded-3 shadow-sm bg-light border position-relative overflow-hidden">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <p class="text-muted mb-1">Bienvenido al sistema</p>
+                        <h1 class="display-6 fw-bold mb-2">
+                            @userName
+                        </h1>
+                        <p class="mb-3">
+                            Panel central para la gestión del progreso académico, cursos,
+                            usuarios y bitácora de actividades.
+                        </p>
+
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg me-2">
+                                Iniciar sesión
+                            </a>
+                            <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-secondary btn-lg">
+                                Registrarse
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success-subtle border border-success text-success px-3 py-2">
+                                Sesión activa
+                            </span>
+                        }
+                    </div>
+                    <div class="col-md-4 d-none d-md-block text-end">
+                        <i class="bi bi-mortarboard-fill" style="font-size: 4rem; opacity: 0.15;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- Sección de accesos rápidos -->
+        <div class="row g-4 mb-4">
+
+            @* Bloque Administrador *@
+            @if (User.IsInRole("Administrador"))
+            {
+                <div class="col-12">
+                    <h5 class="mb-3 text-uppercase text-muted small">Administración</h5>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-2">
+                                <i class="bi bi-people-fill me-2"></i>Gestión de usuarios
+                            </h5>
+                            <p class="card-text text-muted flex-grow-1">
+                                Administre cuentas, roles y permisos del sistema.
+                            </p>
+                            <a asp-controller="Users" asp-action="Index"
+                               class="btn btn-outline-primary mt-2">
+                                Ir a usuarios
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-2">
+                                <i class="bi bi-shield-lock-fill me-2"></i>Roles y permisos
+                            </h5>
+                            <p class="card-text text-muted flex-grow-1">
+                                Cree y gestione roles para controlar el acceso a los módulos.
+                            </p>
+                            <a asp-controller="Roles" asp-action="Index"
+                               class="btn btn-outline-primary mt-2">
+                                Ir a roles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-2">
+                                <i class="bi bi-journal-bookmark-fill me-2"></i>Gestión de cursos
+                            </h5>
+                            <p class="card-text text-muted flex-grow-1">
+                                Configure la oferta académica, términos y asignación de docentes.
+                            </p>
+                            <a asp-controller="Cursos" asp-action="Index"
+                               class="btn btn-outline-primary mt-2">
+                                Ir a cursos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @* Bloque Docente / Coordinador *@
+            @if (User.IsInRole("Docente") || User.IsInRole("Coordinador"))
+            {
+                <div class="col-12 mt-4">
+                    <h5 class="mb-3 text-uppercase text-muted small">Docencia y coordinación</h5>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-2">
+                                <i class="bi bi-bar-chart-fill me-2"></i>Historial académico
+                            </h5>
+                            <p class="card-text text-muted flex-grow-1">
+                                Consulte el desempeño de los estudiantes por curso y cuatrimestre.
+                            </p>
+                            <a asp-controller="Historial" asp-action="Buscar"
+                               class="btn btn-outline-primary mt-2">
+                                Buscar estudiante
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                @* Si más adelante tienes un módulo de evaluaciones, puedes enlazarlo aquí *@
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-2">
+                                <i class="bi bi-clipboard-check-fill me-2"></i>Evaluaciones
+                            </h5>
+                            <p class="card-text text-muted flex-grow-1">
+                                Registre y actualice calificaciones, participación y tareas.
+                            </p>
+                            <a asp-controller="Evaluaciones" asp-action="Index"
+                               class="btn btn-outline-secondary mt-2">
+                                Ir a evaluaciones
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @* Bloque Estudiante (si agregas este rol) *@
+            @if (User.IsInRole("Estudiante"))
+            {
+                <div class="col-12 mt-4">
+                    <h5 class="mb-3 text-uppercase text-muted small">Estudiante</h5>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title mb-2">
+                                <i class="bi bi-graph-up-arrow me-2"></i>Mi rendimiento
+                            </h5>
+                            <p class="card-text text-muted flex-grow-1">
+                                Visualice sus notas y progreso académico a lo largo del tiempo.
+                            </p>
+                            <a asp-controller="MiHistorial" asp-action="Index"
+                               class="btn btn-outline-primary mt-2">
+                                Ver mi historial
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Sección de resumen / estado del sistema (placeholder) -->
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="text-uppercase text-muted small mb-2">Resumen</h6>
+                        <p class="mb-0 text-muted">
+                            Utilice el menú superior o los accesos rápidos para navegar entre
+                            los módulos de usuarios, cursos, historial y bitácora.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Aquí podrías colocar más tarjetas con estadísticas reales en el futuro -->
+        </div>
+    }
+    else
+    {
+        <!-- Vista para usuario no autenticado -->
+        <div class="row mt-4">
+            <div class="col-md-8">
+                <div class="alert alert-info border-0 shadow-sm">
+                    Para acceder a todas las funcionalidades del sistema es necesario
+                    iniciar sesión con un usuario registrado.
+                </div>
+            </div>
+        </div>
+    }
 </div>

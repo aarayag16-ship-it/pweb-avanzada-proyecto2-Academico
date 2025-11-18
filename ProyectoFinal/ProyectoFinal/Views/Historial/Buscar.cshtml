@@ -1,0 +1,74 @@
+﻿@model ProyectoFinal.ViewModels.StudentSearchViewModel
+
+@{
+    ViewData["Title"] = "Buscar historial académico";
+}
+
+<h2>Buscar historial académico</h2>
+
+<form asp-action="Buscar" method="post" class="mb-4">
+    @Html.AntiForgeryToken()
+
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <label asp-for="Nombre" class="form-label"></label>
+            <input asp-for="Nombre" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="CodigoMatricula" class="form-label"></label>
+            <input asp-for="CodigoMatricula" class="form-control" />
+        </div>
+        <div class="col-md-4">
+            <label asp-for="Identificacion" class="form-label"></label>
+            <input asp-for="Identificacion" class="form-control" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Buscar</button>
+
+    <div class="text-danger mt-2">
+        @Html.ValidationSummary()
+    </div>
+</form>
+
+@if (Model.Resultados != null && Model.Resultados.Any())
+{
+    <h3>Resultados</h3>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Matrícula</th>
+                <th>Identificación</th>
+                <th>Correo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var est in Model.Resultados)
+            {
+                <tr>
+                    <td>@est.NombreCompleto</td>
+                    <td>@est.CodigoMatricula</td>
+                    <td>@est.Identificacion</td>
+                    <td>@est.Correo</td>
+                    <td>
+                        <a asp-action="Detalles" asp-route-id="@est.EstudianteId" class="btn btn-sm btn-info">
+                            Ver historial
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    if (Context.Request.Method == "POST")
+    {
+        <div class="alert alert-warning">
+            No se encontraron estudiantes con los criterios especificados.
+        </div>
+    }
+}

@@ -1,0 +1,124 @@
+﻿@model ProyectoFinal.ViewModels.AcademicHistoryViewModel
+
+@{
+    ViewData["Title"] = "Mi historial académico";
+}
+
+<h2>Mi historial académico</h2>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h4 class="card-title">@Model.NombreCompleto</h4>
+        <p class="card-text">
+            <strong>Matrícula:</strong> @Model.CodigoMatricula<br />
+            <strong>Identificación:</strong> @Model.Identificacion<br />
+            <strong>Correo:</strong> @Model.Correo
+        </p>
+    </div>
+</div>
+
+@if (Model.Registros != null && Model.Registros.Any())
+{
+    <h3>Detalle en tabla</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Cuatrimestre</th>
+                <th>Curso</th>
+                <th>Nota final</th>
+                <th>Estado</th>
+                <th>Fecha registro</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.Registros)
+            {
+                <tr>
+                    <td>@r.TerminoDescripcion</td>
+                    <td>@r.CursoNombre</td>
+                    <td>@r.NotaFinal</td>
+                    <td>@r.Estado</td>
+                    <td>@r.FechaRegistro.ToLocalTime()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3>Rendimiento académico (gráfico)</h3>
+    <div class="mb-3">
+        <canvas id="chartRendimiento" height="120"></canvas>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        Aún no tiene registros académicos disponibles.
+    </div>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        (function () {
+            var tieneRegistros = @((Model.Registros != null && Model.Registros.Any()) ? "true" : "false");
+            if (tieneRegistros !== "true") {
+                return;
+            }
+
+            var dataUrl = '@Url.Action("Datos", "MiHistorial")';
+
+            fetch(dataUrl)
+                .then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("No se pudieron cargar los datos del gráfico.");
+                    }
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (!data || data.length === 0) {
+                        return;
+                    }
+
+                    var labels = data.map(function (item) {
+                        return item.terminoDescripcion + " - " + item.cursoNombre;
+                    });
+
+                    var notas = data.map(function (item) {
+                        return item.notaFinal;
+                    });
+
+                    var ctx = document.getElementById('chartRendimiento').getContext('2d');
+
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Nota final',
+                                data: notas,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    suggestedMax: 100,
+                                    title: {
+                                        display: true,
+                                        text: 'Nota'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(function (error) {
+                    console.error(error);
+                });
+        })();
+    </script>
+}
