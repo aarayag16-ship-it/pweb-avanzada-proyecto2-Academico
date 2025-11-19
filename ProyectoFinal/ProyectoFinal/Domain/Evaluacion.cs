@@ -17,7 +17,7 @@ namespace ProyectoFinal.Domain
 
         public decimal NotaFinal { get; set; }   // 0-100
         public string Estado { get; set; } = default!; // Aprobado/Reprobado
-        public string? Observaciones { get; set; }
+        public string? Observaciones { get; set; } //Observaciones
 
         public DateTime FechaRegistro { get; set; }
     }
